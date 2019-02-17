@@ -50,26 +50,26 @@ static Sys_ReturnType Execute(ECommand_Type Type, uint32_t *Handlers, uint8_t Co
     return StatusL;
 }
 
-#ifdef RUNNER_SYNC
 Sys_ReturnType Commander_Run(SRunnerPrototype *Runner)
 {
     Sys_ReturnType StatusL = SYS_OK;
-    for (Runner->CurrentState = eRunnerState_Read;
-         Runner->CurrentState < eRunnerState_Count;)
+
+    if ( Runner->CurrentState >= eRunnerState_Count){
+        Runner->CurrentState = eRunnerState_Read;
+    }
+
+    while(Runner->CurrentState < eRunnerState_Count)
     {
         StatusL |= Execute(eCommandType_Runner, (uint32_t *)&Runner->Handlers, (uint8_t)Runner->CurrentState);
+#ifdef RUNNER_SYNC
         if (Status == SYS_OK)
+#endif // RUNNER_SYNC
         {
              Runner->CurrentState++;
-        }
-        else
-        {
-            // Keep current
         }
     }
     return StatusL;
 }
-#endif // RUNNER_SYNC
 
 Sys_ReturnType Commander_Execute(SCommanderPrototype *Commander, ECommand_Type Command)
 {
