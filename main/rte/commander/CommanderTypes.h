@@ -1,5 +1,6 @@
 #ifndef GeneralType
 #define GeneralType
+ - _Commander_RTransitions {}
 
 typedef Sys_ReturnType (*pFunction)(void);
 
@@ -37,6 +38,7 @@ typedef struct S_Runner_Handler{
 
 typedef struct S_CommanderPrototype{
     ECommander_States CurrentState;
+    ECommander_States RequestedState;
     SCommander_Handler Handlers;
 }SCommanderPrototype;
 
@@ -50,5 +52,10 @@ typedef enum E_Command_Type{
     eCommandType_Runner,
     eCommandType_Count
 }ECommand_Type;
+
+typedef struct S_DisAllowed_Commander_Transitions{
+    ECommander_States Current;
+    ECommander_States Next;
+}SDisAllowed_Commander_Transitions;
 
 #endif

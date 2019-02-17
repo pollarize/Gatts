@@ -7,9 +7,29 @@
 static SCommanderPrototype *CommanderList[] = {
     Commander_Components};
 
+static SDisAllowed_Commander_Transitions CommanderDATrans[] = {
+    Commander_DisAllowed_Transitions};
+
 //-----------------------------------------------------------------------------------------
 // Function Bodies
 //-----------------------------------------------------------------------------------------
+static boolean IsTransitionAllowed(ECommander_States CurrentP, ECommander_States NextP)
+{
+    boolean isAllowed = TRUE;
+    uint8_t u8CounterL = 0;
+
+    for (u8CounterL = 0; u8CounterL < sizeof(CommanderDATrans) / sizeof(CommanderDATrans[0]); u8CounterL++)
+    {
+        if (CurrentP == CommanderDATrans[u8CounterL].Current &&
+            NextP == CommanderDATrans[u8CounterL].Next)
+        {
+            isAllowed = FALSE;
+        }
+    }
+
+    return isAllowed;
+}
+
 static Sys_ReturnType Execute(ECommand_Type Type, uint32_t *Handlers, uint8_t Command)
 {
     uint32_t u32AddrL = (uint32_t)Handlers;
@@ -54,18 +74,19 @@ Sys_ReturnType Commander_Run(SRunnerPrototype *Runner)
 {
     Sys_ReturnType StatusL = SYS_OK;
 
-    if ( Runner->CurrentState >= eRunnerState_Count){
+    if (Runner->CurrentState >= eRunnerState_Count)
+    {
         Runner->CurrentState = eRunnerState_Read;
     }
 
-    while(Runner->CurrentState < eRunnerState_Count)
+    while (Runner->CurrentState < eRunnerState_Count)
     {
         StatusL |= Execute(eCommandType_Runner, (uint32_t *)&Runner->Handlers, (uint8_t)Runner->CurrentState);
 #ifdef RUNNER_SYNC
         if (Status == SYS_OK)
 #endif // RUNNER_SYNC
         {
-             Runner->CurrentState++;
+            Runner->CurrentState++;
         }
     }
     return StatusL;
@@ -74,10 +95,18 @@ Sys_ReturnType Commander_Run(SRunnerPrototype *Runner)
 Sys_ReturnType Commander_Execute(SCommanderPrototype *Commander, ECommand_Type Command)
 {
     Sys_ReturnType StatusL = SYS_OK;
-    StatusL = Execute(eCommandType_Commander, (uint32_t *)&Commander->Handlers, (uint8_t)Command);
-    if (StatusL == SYS_OK)
+    boolean isTransiotionAllowedL = IsTransitionAllowed(Commander->CurrentState, Command);
+    if (FALSE != isTransiotionAllowedL)
     {
-        Commander->CurrentState = Command;
+        StatusL = Execute(eCommandType_Commander, (uint32_t *)&Commander->Handlers, (uint8_t)Command);
+        if (StatusL == SYS_OK)
+        {
+            Commander->CurrentState = Command;
+        }
+    }
+    else
+    {
+        StatusL = SYS_NOT_OK;
     }
     return StatusL;
 }

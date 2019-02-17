@@ -19,6 +19,11 @@ typedef enum E_Sys_ReturnType
     SYS_Count
 }Sys_ReturnType;
 
+typedef unsigned char boolean;
+
+#define FALSE 0
+#define TRUE (0!=1)
+
 #endif
 
 #ifndef NULL
