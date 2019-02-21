@@ -150,8 +150,23 @@ Sys_ReturnType Commander_StateUpdater(SCommanderPrototype *Commander)
             Commander->CurrentState = Commander->RequestedState;
             if(Commander->CurrentState == eCommanderState_StartUp){
                 Commander->RequestedState = eCommanderState_Run;
-            }
+            } 
         }
     }
+    return StatusL;
+}
+
+Sys_ReturnType Commander_SendCommand(SCommanderPrototype *Commander, ECommand_Type Command)
+{
+    Sys_ReturnType StatusL = SYS_OK;
+    StatusL = Commander_Execute(eExecContext_External, Commander, Command);
+    return StatusL;
+}
+
+
+Sys_ReturnType Component_Main(SCommanderPrototype *Commander)
+{
+    Sys_ReturnType StatusL = SYS_OK;
+    StatusL = Commander_Execute(eExecContext_Internal , Commander, eCommanderState_Run);
     return StatusL;
 }

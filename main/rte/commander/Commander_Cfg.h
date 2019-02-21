@@ -27,4 +27,4 @@ Commander_Import_Component(TestComp);
     {eCommanderState_Undefined, eCommanderState_Sleep},  \
     {eCommanderState_Undefined, eCommanderState_Run},  \
     {eCommanderState_Undefined, eCommanderState_StartUp},  \
-    {eCommanderState_Undefined, eCommanderState_DeInit},  \
+    {eCommanderState_Undefined, eCommanderState_DeInit}
