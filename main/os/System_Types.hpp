@@ -21,8 +21,10 @@ typedef enum E_Sys_ReturnType
 
 typedef unsigned char boolean;
 
-#define FALSE 0
-#define TRUE (0!=1)
+#ifndef TRUE
+    #define FALSE 0
+    #define TRUE (0!=1)
+#endif
 
 #endif
 
