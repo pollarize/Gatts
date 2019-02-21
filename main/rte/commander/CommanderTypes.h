@@ -1,8 +1,15 @@
 #ifndef GeneralType
 #define GeneralType
- - _Commander_RTransitions {}
+
+#define COMMANDER_ASYNC
 
 typedef Sys_ReturnType (*pFunction)(void);
+
+typedef enum E_ExecContext{
+    eExecContext_External,
+    eExecContext_Internal,
+    eExecContext_Count
+}EExecContext;
 
 typedef enum E_Commander_States{
     eCommanderState_Undefined,
@@ -57,5 +64,7 @@ typedef struct S_DisAllowed_Commander_Transitions{
     ECommander_States Current;
     ECommander_States Next;
 }SDisAllowed_Commander_Transitions;
+
+
 
 #endif

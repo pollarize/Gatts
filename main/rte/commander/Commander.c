@@ -92,22 +92,37 @@ Sys_ReturnType Commander_Run(SRunnerPrototype *Runner)
     return StatusL;
 }
 
-Sys_ReturnType Commander_Execute(SCommanderPrototype *Commander, ECommand_Type Command)
+Sys_ReturnType Commander_Execute(EExecContext Context,SCommanderPrototype *Commander, ECommand_Type Command)
 {
     Sys_ReturnType StatusL = SYS_OK;
-    boolean isTransiotionAllowedL = IsTransitionAllowed(Commander->CurrentState, Command);
-    if (FALSE != isTransiotionAllowedL)
+    boolean isTransiotionAllowedL;
+ 
+    if (Context == eExecContext_External)
     {
-        StatusL = Execute(eCommandType_Commander, (uint32_t *)&Commander->Handlers, (uint8_t)Command);
-        if (StatusL == SYS_OK)
+        isTransiotionAllowedL = IsTransitionAllowed(Commander->CurrentState, Command);
+        if (FALSE != isTransiotionAllowedL)
         {
-            Commander->CurrentState = Command;
+            Commander->RequestedState = Command;
+        }
+        else
+        {
+            StatusL = SYS_NOT_OK;
         }
     }
-    else
+        
+    if (Context == eExecContext_Internal)
     {
-        StatusL = SYS_NOT_OK;
+        isTransiotionAllowedL = IsTransitionAllowed(Commander->CurrentState, Commander->RequestedState);
+        if (FALSE != isTransiotionAllowedL)
+        {
+            StatusL = Commander_StateUpdater(Commander);
+        }
+        else
+        {
+            StatusL = SYS_NOT_OK;
+        }
     }
+   
     return StatusL;
 }
 
@@ -117,7 +132,26 @@ Sys_ReturnType Commander_ExecuteAll(ECommand_Type Command)
     Sys_ReturnType StatusL = SYS_OK;
     for (u8CounterL = 0; u8CounterL < sizeof(CommanderList) / sizeof(CommanderList[0]); u8CounterL++)
     {
-        StatusL |= Commander_Execute(CommanderList[u8CounterL], Command);
+        StatusL |= Commander_Execute(eExecContext_External,CommanderList[u8CounterL], Command);
+    }
+    return StatusL;
+}
+
+
+Sys_ReturnType Commander_StateUpdater(SCommanderPrototype *Commander)
+{
+    Sys_ReturnType StatusL = SYS_OK;
+    if (Commander->CurrentState != Commander->RequestedState || 
+        Commander->CurrentState == eCommanderState_Run)
+    {
+        StatusL = Execute(eCommandType_Commander, (uint32_t *)&Commander->Handlers, (uint8_t)Commander->RequestedState);
+        if (StatusL == SYS_OK)
+        {
+            Commander->CurrentState = Commander->RequestedState;
+            if(Commander->CurrentState == eCommanderState_StartUp){
+                Commander->RequestedState = eCommanderState_Run;
+            }
+        }
     }
     return StatusL;
 }
