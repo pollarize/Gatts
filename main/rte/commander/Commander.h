@@ -8,7 +8,6 @@
     static ReturnType OnDeInit_##ComponentName();     \
     SCommanderPrototype Commander_##ComponentName = { \
         eCommanderState_Undefined,                    \
-        eCommanderState_Undefined,                    \
         {&OnInit_##ComponentName,                     \
          &OnStartUp_##ComponentName,                  \
          &OnRun_##ComponentName,                      \
@@ -28,8 +27,7 @@
 #define On(ReturnType, Handler, ComponentName) \
     static ReturnType On##Handler##_##ComponentName()
 
-// Exported functions  
-extern Sys_ReturnType Commander_Execute(EExecContext Context, SCommanderPrototype *Commander, ECommand_Type Command);
+// Exported functions
+extern Sys_ReturnType Commander_Execute(SCommanderPrototype *Commander, ECommand_Type Command);
 extern Sys_ReturnType Commander_Run(SRunnerPrototype *Runner);
 extern Sys_ReturnType Commander_ExecuteAll(ECommand_Type Command);
-extern Sys_ReturnType Commander_StateUpdater(SCommanderPrototype *Commander);
