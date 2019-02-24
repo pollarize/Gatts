@@ -1,0 +1,69 @@
+#include <stdint.h>
+#include "System_Types.hpp"
+#include "Commander.h"
+#include "CommanderTypes.h"
+
+
+#define instOn(Handler) On(Sys_ReturnType, Handler, TestComp)
+CommanderInstance(Sys_ReturnType, TestComp);
+RunnerInstance(Sys_ReturnType, TestComp);
+
+
+//Commander
+instOn(Init)
+{
+    Sys_ReturnType StatusL = SYS_OK;
+     /*code*/
+    return StatusL;
+}
+
+instOn(StartUp)
+{
+    Sys_ReturnType StatusL = SYS_OK;
+     /*code*/
+    return StatusL;
+}
+
+instOn(Run)
+{
+    Sys_ReturnType StatusL = SYS_OK;
+    StatusL = Commander_Run(&Runner_TestComp);
+    return StatusL;
+}
+
+instOn(Sleep)
+{
+    Sys_ReturnType StatusL = SYS_OK;
+     /*code*/
+    return StatusL;
+}
+
+instOn(DeInit)
+{
+    Sys_ReturnType StatusL = SYS_OK;
+     /*code*/
+    return StatusL;
+}
+
+// Runner
+instOn(Read)
+{
+    Sys_ReturnType StatusL = SYS_OK;
+     /*code*/
+    return StatusL;
+}
+
+instOn(Process)
+{
+    Sys_ReturnType StatusL = SYS_OK;
+    /*code*/
+    return StatusL;
+}
+
+instOn(Write)
+{
+    Sys_ReturnType StatusL = SYS_OK;
+     /*code*/
+    return StatusL;
+}
+

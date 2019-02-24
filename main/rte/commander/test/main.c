@@ -10,8 +10,33 @@
 
 #define instOn(Handler) On(Sys_ReturnType, Handler, TestComp)
 
+const char* StatusStr[]={
+    "OK",
+    "NOK",
+    "PENDING"
+};
+
+const char* CommandStr[] = {
+   "Undefined",
+   "Init",
+   "StartUp",
+   "Run",
+   "Sleep",
+   "DeInit"
+};
+
 CommanderInstance(Sys_ReturnType, TestComp);
 RunnerInstance(Sys_ReturnType, TestComp);
+
+#define Commander_SendCommand(who, what) \
+    Sys_ReturnType StatusL = Commander_SendCommand((who), (what));\
+    printf("\nCommand = %s - %s\n",CommandStr[(what)],StatusStr[StatusL])
+
+
+#define Component_Main(who) \
+    Sys_ReturnType StatusL = Component_Main((who));\
+    printf("\Run = %s\n",StatusStr[StatusL])
+
 
 //Commander
 instOn(Init)
@@ -87,24 +112,24 @@ void SetInterval(clock_t *before, pFunction callback, uint32_t timeMs)
 
 void Task_1000ms()
 {
-     Component_Main(&Commander_TestComp);
+    Component_Main(&Commander_TestComp);
 } 
 
 void Task_2000ms()
 {
-      Commander_SendCommand(&Commander_TestComp, eCommanderState_StartUp);
+    Commander_SendCommand(&Commander_TestComp, eCommanderState_StartUp);
 } 
 
 void Task_5000ms()
 {
-     Commander_SendCommand(&Commander_TestComp, eCommanderState_Sleep);
+    Commander_SendCommand(&Commander_TestComp, eCommanderState_Sleep);
 } 
 
 int main()
 {
     clock_t before[] = {clock(),clock(),clock()};
 
-     Commander_SendCommand(&Commander_TestComp, eCommanderState_Init);
+    Commander_SendCommand(&Commander_TestComp, eCommanderState_Init);
     // Commander_Execute(eExecContext_External,&Commander_TestComp, eCommanderState_Run);
     // Commander_ExecuteAll(eCommanderState_Run);
 
