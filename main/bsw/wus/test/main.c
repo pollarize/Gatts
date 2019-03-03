@@ -7,8 +7,6 @@
 #include "../../../rte/commander/Commander.h"
 #include "../../../rte/commander/CommanderTypes.h"
 
-#define Commander_TestComp Commander_WUS
-
 extern SCommanderPrototype Commander_WUS;
 
 const char* StatusStr[]={
@@ -44,24 +42,26 @@ void SetInterval(clock_t *before, pFunction callback, uint32_t timeMs)
 
 void Task_1000ms()
 {
-    Component_Main(&Commander_TestComp);
+    Component_Main(&Commander_WUS);
 } 
 
 void Task_2000ms()
 {
-    Commander_SendCommand(&Commander_TestComp, eCommanderState_StartUp);
+    Commander_SendCommand(&Commander_WUS, eCommanderState_StartUp);
 } 
 
 void Task_5000ms()
 {
-    Commander_SendCommand(&Commander_TestComp, eCommanderState_Sleep);
+    Commander_SendCommand(&Commander_WUS, eCommanderState_Sleep);
 } 
 
 int main()
 {
     clock_t before[] = {clock(),clock(),clock()};
 
-    Commander_SendCommand(&Commander_TestComp, eCommanderState_Init);
+    // Commander_SendCommand(&Commander_WUS, eCommanderState_Init);
+    Component_AutoStartUp(&Commander_WUS);
+    Commander_ExecuteAll(eCommanderState_Init);
 
     while(1)
     {
