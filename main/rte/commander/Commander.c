@@ -153,6 +153,10 @@ Sys_ReturnType Commander_StateUpdater(SCommanderPrototype *Commander)
             } 
         }
     }
+    else
+    {
+        StatusL = SYS_NOT_OK;
+    }
     return StatusL;
 }
 
@@ -168,5 +172,20 @@ Sys_ReturnType Component_Main(SCommanderPrototype *Commander)
 {
     Sys_ReturnType StatusL = SYS_OK;
     StatusL = Commander_Execute(eExecContext_Internal , Commander, eCommanderState_Run);
+    return StatusL;
+}
+
+Sys_ReturnType Component_AutoStartUp(SCommanderPrototype *Commander)
+{
+    Sys_ReturnType StatusL = SYS_OK;
+
+    // Init component
+    StatusL = Commander_SendCommand(Commander, eCommanderState_Init);
+    StatusL |= Commander_Execute(eExecContext_Internal , Commander, eCommanderState_Init);
+
+    //StartUp Component
+    StatusL |= Commander_SendCommand(Commander, eCommanderState_StartUp);
+    StatusL |= Commander_Execute(eExecContext_Internal , Commander, eCommanderState_StartUp);
+    
     return StatusL;
 }

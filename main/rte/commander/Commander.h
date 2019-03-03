@@ -30,8 +30,10 @@
 
 // Exported functions  
 extern Sys_ReturnType Commander_SendCommand(SCommanderPrototype *Commander, ECommand_Type Command);
-extern Sys_ReturnType Component_Main(SCommanderPrototype *Commander);
 extern Sys_ReturnType Commander_Execute(EExecContext Context, SCommanderPrototype *Commander, ECommand_Type Command);
 extern Sys_ReturnType Commander_Run(SRunnerPrototype *Runner);
 extern Sys_ReturnType Commander_ExecuteAll(ECommand_Type Command);
 extern Sys_ReturnType Commander_StateUpdater(SCommanderPrototype *Commander);
+
+extern Sys_ReturnType Component_Main(SCommanderPrototype *Commander);
+extern Sys_ReturnType Component_AutoStartUp(SCommanderPrototype *Commander);
