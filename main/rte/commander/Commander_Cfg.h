@@ -6,14 +6,11 @@
     &Commander_##ComponentName
 
 Commander_Import_Component(TestComp);
+// Commander_Import_Component(WUS);
 
-#define Commander_Components 
-                                      \
-    // Commander_Import_Row(TestComp),\
-    // Commander_Import_Row(TestComp),\
-    // Commander_Import_Row(TestComp),\
-    // Commander_Import_Row(TestComp),\
-    // Commander_Import_Row(TestComp),
+#define Commander_Components \
+    Commander_Import_Row(TestComp),
+
 
 #define Commander_DisAllowed_Transitions \
     {eCommanderState_Sleep, eCommanderState_Run},  \

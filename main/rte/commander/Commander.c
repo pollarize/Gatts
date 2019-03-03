@@ -92,7 +92,7 @@ Sys_ReturnType Commander_Run(SRunnerPrototype *Runner)
     return StatusL;
 }
 
-Sys_ReturnType Commander_Execute(EExecContext Context,SCommanderPrototype *Commander, ECommand_Type Command)
+Sys_ReturnType Commander_Execute(EExecContext Context,SCommanderPrototype *Commander, ECommander_States Command)
 {
     Sys_ReturnType StatusL = SYS_OK;
     boolean isTransiotionAllowedL;
@@ -126,7 +126,7 @@ Sys_ReturnType Commander_Execute(EExecContext Context,SCommanderPrototype *Comma
     return StatusL;
 }
 
-Sys_ReturnType Commander_ExecuteAll(ECommand_Type Command)
+Sys_ReturnType Commander_ExecuteAll(ECommander_States Command)
 {
     uint8_t u8CounterL = 0;
     Sys_ReturnType StatusL = SYS_OK;
@@ -160,13 +160,29 @@ Sys_ReturnType Commander_StateUpdater(SCommanderPrototype *Commander)
     return StatusL;
 }
 
-Sys_ReturnType Commander_SendCommand(SCommanderPrototype *Commander, ECommand_Type Command)
+Sys_ReturnType Commander_SendCommand(SCommanderPrototype *Commander, ECommander_States Command)
 {
     Sys_ReturnType StatusL = SYS_OK;
     StatusL = Commander_Execute(eExecContext_External, Commander, Command);
     return StatusL;
 }
 
+Sys_ReturnType Commander_CheckAll(ECommander_States Command)
+{
+    uint8_t u8CounterL = 0;
+    Sys_ReturnType StatusL = SYS_OK;
+    for (u8CounterL = 0; u8CounterL < sizeof(CommanderList) / sizeof(CommanderList[0]); u8CounterL++)
+    {
+        StatusL |= (Sys_ReturnType)(CommanderList[u8CounterL]->CurrentState != Command);
+    }
+
+    if (StatusL != SYS_OK)
+    {
+        StatusL = SYS_PENDING;
+    }
+
+    return StatusL;
+}
 
 Sys_ReturnType Component_Main(SCommanderPrototype *Commander)
 {
@@ -186,6 +202,6 @@ Sys_ReturnType Component_AutoStartUp(SCommanderPrototype *Commander)
     //StartUp Component
     StatusL |= Commander_SendCommand(Commander, eCommanderState_StartUp);
     StatusL |= Commander_Execute(eExecContext_Internal , Commander, eCommanderState_StartUp);
-    
+
     return StatusL;
 }

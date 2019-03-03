@@ -8,6 +8,7 @@
 #include "../../../rte/commander/CommanderTypes.h"
 
 extern SCommanderPrototype Commander_WUS;
+extern SCommanderPrototype Commander_TestComp;
 
 const char* StatusStr[]={
     "OK",
@@ -31,7 +32,7 @@ void SetInterval(clock_t *before, pFunction callback, uint32_t timeMs)
     if ( diffMs >= timeMs )
     {
         callback();
-        printf("%d ",diffMs );
+        // printf("%d ",diffMs );
         if(diffMs > timeMs){
             diff -= (diffMs - timeMs)/1000*CLOCKS_PER_SEC;
         }
@@ -47,12 +48,12 @@ void Task_1000ms()
 
 void Task_2000ms()
 {
-    Commander_SendCommand(&Commander_WUS, eCommanderState_StartUp);
+    Component_Main(&Commander_TestComp);
 } 
 
 void Task_5000ms()
 {
-    Commander_SendCommand(&Commander_WUS, eCommanderState_Sleep);
+    
 } 
 
 int main()
@@ -66,9 +67,9 @@ int main()
     while(1)
     {
         uint8_t i = 0;
-        SetInterval(&before[i++],(pFunction )&Task_1000ms,1000);
-        SetInterval(&before[i++],(pFunction )&Task_2000ms,10000);
-        SetInterval(&before[i++],(pFunction )&Task_5000ms,20000);
+        SetInterval(&before[i++],(pFunction )&Task_1000ms,100);
+        SetInterval(&before[i++],(pFunction )&Task_2000ms,10);
+        // SetInterval(&before[i++],(pFunction )&Task_5000ms,5000);
         Sleep(1);
     }
 
