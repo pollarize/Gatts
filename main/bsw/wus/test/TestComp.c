@@ -2,7 +2,7 @@
 #include "../../os/System_Types.hpp"
 #include "../../rte/commander/Commander.h"
 #include "../../rte/commander/CommanderTypes.h"
-
+#include <stdio.h>
 
 #define instOn(Handler) On(Sys_ReturnType, Handler, TestComp)
 CommanderInstance(Sys_ReturnType, TestComp);

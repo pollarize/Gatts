@@ -32,9 +32,9 @@
 extern Sys_ReturnType Commander_SendCommand(SCommanderPrototype *Commander, ECommander_States Command);
 extern Sys_ReturnType Commander_Execute(EExecContext Context, SCommanderPrototype *Commander, ECommander_States Command);
 extern Sys_ReturnType Commander_Run(SRunnerPrototype *Runner);
-extern Sys_ReturnType Commander_ExecuteAll(ECommander_States Command);
 extern Sys_ReturnType Commander_StateUpdater(SCommanderPrototype *Commander);
-extern Sys_ReturnType Commander_CheckAll(ECommander_States Command);
+extern Sys_ReturnType Commander_ExecuteAll(SCommanderPrototype** CommanderList, uint8_t u8SizeOfList, ECommander_States Command);
+extern Sys_ReturnType Commander_CheckAll(SCommanderPrototype** CommanderList, uint8_t u8SizeOfList, ECommander_States Command);
 
 extern Sys_ReturnType Component_Main(SCommanderPrototype *Commander);
 extern Sys_ReturnType Component_AutoStartUp(SCommanderPrototype *Commander);

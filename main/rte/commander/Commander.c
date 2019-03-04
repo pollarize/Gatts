@@ -4,9 +4,6 @@
 #include "Commander.h"
 #include "Commander_Cfg.h"
 
-static SCommanderPrototype *CommanderList[] = {
-    Commander_Components};
-
 static SDisAllowed_Commander_Transitions CommanderDATrans[] = {
     Commander_DisAllowed_Transitions};
 
@@ -92,7 +89,7 @@ Sys_ReturnType Commander_Run(SRunnerPrototype *Runner)
     return StatusL;
 }
 
-Sys_ReturnType Commander_Execute(EExecContext Context,SCommanderPrototype *Commander, ECommander_States Command)
+Sys_ReturnType Commander_Execute(EExecContext Context, SCommanderPrototype *Commander, ECommander_States Command)
 {
     Sys_ReturnType StatusL = SYS_OK;
     boolean isTransiotionAllowedL;
@@ -126,13 +123,13 @@ Sys_ReturnType Commander_Execute(EExecContext Context,SCommanderPrototype *Comma
     return StatusL;
 }
 
-Sys_ReturnType Commander_ExecuteAll(ECommander_States Command)
+Sys_ReturnType Commander_ExecuteAll(SCommanderPrototype** CommanderList, uint8_t u8SizeOfList ,ECommander_States Command)
 {
     uint8_t u8CounterL = 0;
     Sys_ReturnType StatusL = SYS_OK;
-    for (u8CounterL = 0; u8CounterL < sizeof(CommanderList) / sizeof(CommanderList[0]); u8CounterL++)
+    for (u8CounterL = 0; u8CounterL < u8SizeOfList; u8CounterL++)
     {
-        StatusL |= Commander_Execute(eExecContext_External,CommanderList[u8CounterL], Command);
+        StatusL |= Commander_Execute(eExecContext_External, CommanderList[u8CounterL], Command);
     }
     return StatusL;
 }
@@ -167,11 +164,11 @@ Sys_ReturnType Commander_SendCommand(SCommanderPrototype *Commander, ECommander_
     return StatusL;
 }
 
-Sys_ReturnType Commander_CheckAll(ECommander_States Command)
+Sys_ReturnType Commander_CheckAll(SCommanderPrototype **CommanderList, uint8_t u8SizeOfList ,ECommander_States Command)
 {
     uint8_t u8CounterL = 0;
     Sys_ReturnType StatusL = SYS_OK;
-    for (u8CounterL = 0; u8CounterL < sizeof(CommanderList) / sizeof(CommanderList[0]); u8CounterL++)
+    for (u8CounterL = 0; u8CounterL < u8SizeOfList; u8CounterL++)
     {
         StatusL |= (Sys_ReturnType)(CommanderList[u8CounterL]->CurrentState != Command);
     }

@@ -4,6 +4,8 @@
 #include "../../rte/commander/CommanderTypes.h"
 #include "Wus_Cfg.h"
 
+#include <stdio.h>
+
 #define instOn(Handler) On(Sys_ReturnType, Handler, WUS)
 
 CommanderInstance(Sys_ReturnType, WUS);
@@ -12,6 +14,13 @@ RunnerInstance(Sys_ReturnType, WUS);
 static boolean bIsStartUp = FALSE;
 static uint16_t u16Timer = 0;
 static uint16_t u16DeadTimer = 0;
+
+static SCommanderPrototype* CommanderList_BSW[] = 
+{
+    Commander_BSW_Components
+};
+
+static const uint8_t u8SizeOfList_BSW = sizeof(CommanderList_BSW)/sizeof(CommanderList_BSW[0]);
 
 //Commander
 instOn(Init)
@@ -66,18 +75,22 @@ instOn(Process)
     Sys_ReturnType StatusL = SYS_OK;
     if (bIsStartUp == FALSE)
     {
-        if (SYS_OK == Commander_CheckAll(eCommanderState_Init) ||
-            SYS_OK == Commander_CheckAll(eCommanderState_Sleep))
+        if (SYS_OK == Commander_CheckAll(CommanderList_BSW, u8SizeOfList_BSW, eCommanderState_Init) ||
+            SYS_OK == Commander_CheckAll(CommanderList_BSW, u8SizeOfList_BSW, eCommanderState_Sleep))
         {
             // Start UP all components
-            StatusL = Commander_ExecuteAll(eCommanderState_StartUp);
+            StatusL = Commander_ExecuteAll(CommanderList_BSW, u8SizeOfList_BSW, eCommanderState_StartUp);
             bIsStartUp = TRUE;
+        }
+        else
+        {
+            StatusL = Commander_ExecuteAll(CommanderList_BSW, u8SizeOfList_BSW, eCommanderState_Init);
         }
     }
     else
     {
         // After startUp the components go to RUN phase automatically
-        if (SYS_OK == Commander_CheckAll(eCommanderState_Run) ||
+        if (SYS_OK == Commander_CheckAll(CommanderList_BSW, u8SizeOfList_BSW, eCommanderState_Run) ||
             cDEAD_ALIVE_Tasks == u16DeadTimer)
         {
             // Increment as Run Timer
@@ -87,7 +100,7 @@ instOn(Process)
         }
         else
         {
-            if (SYS_OK == Commander_CheckAll(eCommanderState_Sleep) || 
+            if (SYS_OK == Commander_CheckAll(CommanderList_BSW, u8SizeOfList_BSW, eCommanderState_Sleep) || 
                 cDEAD_ALIVE_Tasks == u16DeadTimer)
             {
                 // Increment as sleep timer
@@ -113,7 +126,7 @@ instOn(Process)
 
     if (cWAKEUP_TIME_Tasks == u16Timer)
     {
-        StatusL = Commander_ExecuteAll(eCommanderState_Sleep);
+        StatusL = Commander_ExecuteAll(CommanderList_BSW, u8SizeOfList_BSW, eCommanderState_Sleep);
     }
 
     if (cDEAD_ALIVE_Tasks == u16DeadTimer)

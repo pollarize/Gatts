@@ -62,7 +62,7 @@ int main()
 
     // Commander_SendCommand(&Commander_WUS, eCommanderState_Init);
     Component_AutoStartUp(&Commander_WUS);
-    Commander_ExecuteAll(eCommanderState_Init);
+    // Commander_ExecuteAll(eCommanderState_Init);
 
     while(1)
     {
