@@ -68,7 +68,7 @@ int main()
     {
         uint8_t i = 0;
         SetInterval(&before[i++],(pFunction )&Task_1000ms,100);
-        SetInterval(&before[i++],(pFunction )&Task_2000ms,10);
+        SetInterval(&before[i++],(pFunction )&Task_2000ms,100);
         // SetInterval(&before[i++],(pFunction )&Task_5000ms,5000);
         Sleep(1);
     }

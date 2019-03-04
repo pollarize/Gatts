@@ -2,6 +2,7 @@
 #include "../../os/System_Types.hpp"
 #include "../../rte/commander/Commander.h"
 #include "../../rte/commander/CommanderTypes.h"
+#include "Wus_Cfg.h"
 
 #define instOn(Handler) On(Sys_ReturnType, Handler, WUS)
 
@@ -9,14 +10,16 @@ CommanderInstance(Sys_ReturnType, WUS);
 RunnerInstance(Sys_ReturnType, WUS);
 
 static boolean bIsStartUp = FALSE;
-static uint8_t u8Timer = 0;
+static uint16_t u16Timer = 0;
+static uint16_t u16DeadTimer = 0;
 
 //Commander
 instOn(Init)
 {
     Sys_ReturnType StatusL = SYS_OK;
     bIsStartUp = FALSE;
-    u8Timer = 0;
+    u16Timer = 0;
+    u16DeadTimer = 0;
     return StatusL;
 }
 
@@ -24,7 +27,8 @@ instOn(StartUp)
 {
     Sys_ReturnType StatusL = SYS_OK;
     bIsStartUp = FALSE;
-    u8Timer = 0;
+    u16Timer = 0;
+    u16DeadTimer = 0;
     return StatusL;
 }
 
@@ -73,23 +77,48 @@ instOn(Process)
     else
     {
         // After startUp the components go to RUN phase automatically
-        if (SYS_OK == Commander_CheckAll(eCommanderState_Run))
+        if (SYS_OK == Commander_CheckAll(eCommanderState_Run) ||
+            cDEAD_ALIVE_Tasks == u16DeadTimer)
         {
-            u8Timer++;
+            // Increment as Run Timer
+            u16Timer++;
+            printf("%d         \r",u16Timer);
+            u16DeadTimer = 0;
         }
         else
         {
-            if (SYS_OK == Commander_CheckAll(eCommanderState_Sleep))
+            if (SYS_OK == Commander_CheckAll(eCommanderState_Sleep) || 
+                cDEAD_ALIVE_Tasks == u16DeadTimer)
             {
-                u8Timer = 0;
-                bIsStartUp = FALSE;
+                // Increment as sleep timer
+                u16Timer++;
+                printf("%d         \r",u16Timer);
+                u16DeadTimer = 0;
+
+                // Timer is common for both WU and S
+                if (u16Timer == cSLEEP_TIME_Tasks + cWAKEUP_TIME_Tasks)
+                {
+                    u16Timer = 0;
+                    bIsStartUp = FALSE;
+                }
+            }
+            else
+            {
+                // Increment dead timer
+                u16DeadTimer++;
+                printf("      %d\r",u16DeadTimer);
             }
         }
     }
 
-    if (u8Timer == 4)
+    if (cWAKEUP_TIME_Tasks == u16Timer)
     {
         StatusL = Commander_ExecuteAll(eCommanderState_Sleep);
+    }
+
+    if (cDEAD_ALIVE_Tasks == u16DeadTimer)
+    {
+        printf("\nDead TIME Achieved! \n");
     }
 
     return StatusL;
