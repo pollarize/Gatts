@@ -1,13 +1,10 @@
 
-#define Commander_DisAllowed_Transitions \
-    {eCommanderState_Sleep, eCommanderState_Run},  \
-    {eCommanderState_DeInit, eCommanderState_Run}, \
-    {eCommanderState_Init, eCommanderState_Run}, \
-    {eCommanderState_Run, eCommanderState_StartUp},  \
-    {eCommanderState_Run, eCommanderState_Init},  \
-    {eCommanderState_Run, eCommanderState_DeInit},  \
-    {eCommanderState_Run, eCommanderState_Undefined},  \
-    {eCommanderState_Undefined, eCommanderState_Sleep},  \
-    {eCommanderState_Undefined, eCommanderState_Run},  \
-    {eCommanderState_Undefined, eCommanderState_StartUp},  \
-    {eCommanderState_Undefined, eCommanderState_DeInit}
+#define Commander_Allowed_Transitions                   \
+    {eCommanderState_Undefined, eCommanderState_Init},  \
+    {eCommanderState_DeInit, eCommanderState_Init},     \
+    {eCommanderState_Init, eCommanderState_StartUp},    \
+    {eCommanderState_StartUp, eCommanderState_Run},     \
+    {eCommanderState_Run, eCommanderState_Run},         \
+    {eCommanderState_Run, eCommanderState_Sleep},       \
+    {eCommanderState_Sleep, eCommanderState_StartUp},   \
+    {eCommanderState_Sleep, eCommanderState_DeInit} 

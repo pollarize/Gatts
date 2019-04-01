@@ -19,7 +19,7 @@ HEADERS = $(wildcard *.h) $(wildcard ../*.h)
 .PRECIOUS: $(TARGET) $(OBJECTS)
 
 $(TARGET): $(OBJECTS)
-	$(CC) $(OBJECTS) -Wall $(LIBS) $(INCLUDES) -o $@
+	$(CC) $(OBJECTS) -Wall $(LIBS) $(INCLUDES) -o $@ -Wl,-Map=$(TARGET).map
 
 clean:
 	-rm -f *.o

@@ -5,14 +5,14 @@
 #include "Commander_Cfg.h"
 
 static SDisAllowed_Commander_Transitions CommanderDATrans[] = {
-    Commander_DisAllowed_Transitions};
+    Commander_Allowed_Transitions};
 
 //-----------------------------------------------------------------------------------------
 // Function Bodies
 //-----------------------------------------------------------------------------------------
 static boolean IsTransitionAllowed(ECommander_States CurrentP, ECommander_States NextP)
 {
-    boolean isAllowed = TRUE;
+    boolean isAllowed = FALSE;
     uint8_t u8CounterL = 0;
 
     for (u8CounterL = 0; u8CounterL < sizeof(CommanderDATrans) / sizeof(CommanderDATrans[0]); u8CounterL++)
@@ -20,7 +20,8 @@ static boolean IsTransitionAllowed(ECommander_States CurrentP, ECommander_States
         if (CurrentP == CommanderDATrans[u8CounterL].Current &&
             NextP == CommanderDATrans[u8CounterL].Next)
         {
-            isAllowed = FALSE;
+            isAllowed = TRUE;
+            break;
         }
     }
 
